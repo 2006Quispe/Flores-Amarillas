@@ -22,7 +22,6 @@ from "./flowers.js";
 
 createGalaxy();
 
-
 createOrbitalSystem(
     scene
 );
@@ -50,21 +49,17 @@ paramos la rotación automática.
 */
 
 renderer.domElement.addEventListener(
-
     "pointerdown",
-
     () => {
 
         controls.autoRotate =
             false;
-
 
         clearTimeout(
             autoRotateTimeout
         );
 
     }
-
 );
 
 
@@ -74,32 +69,25 @@ la rotación automática vuelve.
 */
 
 window.addEventListener(
-
     "pointerup",
-
     () => {
 
         clearTimeout(
             autoRotateTimeout
         );
 
-
         autoRotateTimeout =
             setTimeout(
-
                 () => {
 
                     controls.autoRotate =
                         true;
 
                 },
-
                 2500
-
             );
 
     }
-
 );
 
 
@@ -112,12 +100,10 @@ const music =
         "background-music"
     );
 
-
 const musicButton =
     document.getElementById(
         "music-button"
     );
-
 
 const musicMessage =
     document.getElementById(
@@ -125,32 +111,15 @@ const musicMessage =
     );
 
 
-/*
-Volumen final.
-
-Puedes cambiarlo:
-
-0.20 = bajito
-0.35 = recomendado
-0.50 = medio
-1.00 = máximo
-*/
-
 const TARGET_VOLUME =
     0.35;
 
 
-/*
-Estado de la música.
-*/
-
 let musicStarted =
     false;
 
-
 let musicMuted =
     false;
-
 
 let fadeInterval =
     null;
@@ -166,44 +135,25 @@ function fadeInMusic() {
         fadeInterval
     );
 
-
-    /*
-    Empezamos prácticamente
-    desde silencio.
-    */
-
     music.volume =
         0;
 
-
     const fadeDuration =
-        2500;
-
+        2000;
 
     const steps =
-        50;
-
+        40;
 
     const intervalTime =
-        fadeDuration /
-        steps;
-
+        fadeDuration / steps;
 
     const volumeStep =
-        TARGET_VOLUME /
-        steps;
+        TARGET_VOLUME / steps;
 
 
     fadeInterval =
         setInterval(
-
             () => {
-
-                /*
-                Si el usuario silenció
-                durante el fade,
-                detenemos el proceso.
-                */
 
                 if (
                     musicMuted
@@ -214,18 +164,15 @@ function fadeInMusic() {
                     );
 
                     return;
-
                 }
 
 
                 const newVolume =
                     Math.min(
-
                         music.volume +
                         volumeStep,
 
                         TARGET_VOLUME
-
                     );
 
 
@@ -245,10 +192,44 @@ function fadeInMusic() {
                 }
 
             },
-
             intervalTime
-
         );
+}
+
+
+/* =====================================
+   INTERFAZ: MÚSICA ENCENDIDA
+===================================== */
+
+function showMusicPlaying() {
+
+    musicButton.textContent =
+        "♫";
+
+    musicButton.classList.add(
+        "playing"
+    );
+
+    musicButton.classList.remove(
+        "muted"
+    );
+
+
+    musicMessage.classList.add(
+        "hidden"
+    );
+
+
+    setTimeout(
+        () => {
+
+            musicMessage.style.display =
+                "none";
+
+        },
+        1000
+    );
+
 }
 
 
@@ -256,201 +237,173 @@ function fadeInMusic() {
    INICIAR MÚSICA
 ===================================== */
 
-async function startMusic() {
+function startMusic() {
 
     /*
-    Evitamos iniciarla dos veces.
+    Si ya está reproduciéndose,
+    no hacemos nada.
     */
 
     if (
-        musicStarted
+        musicStarted &&
+        !music.paused
     ) {
 
         return;
-
     }
-
-
-    try {
-
-        music.volume =
-            0;
-
-
-        await music.play();
-
-
-        musicStarted =
-            true;
-
-
-        musicMuted =
-            false;
-
-
-        /*
-        Fade-in suave.
-        */
-
-        fadeInMusic();
-
-
-        /*
-        Actualizamos botón.
-        */
-
-        musicButton.textContent =
-            "♫";
-
-
-        musicButton.classList.add(
-            "playing"
-        );
-
-
-        musicButton.classList.remove(
-            "muted"
-        );
-
-
-        /*
-        Ocultamos el mensaje.
-        */
-
-        musicMessage.classList.add(
-            "hidden"
-        );
-
-
-        /*
-        Después de la animación,
-        lo quitamos del DOM.
-        */
-
-        setTimeout(
-
-            () => {
-
-                musicMessage.style.display =
-                    "none";
-
-            },
-
-            1200
-
-        );
-
-    }
-
-    catch (error) {
-
-        /*
-        No es un error grave.
-
-        Algunos navegadores pueden
-        bloquear el audio hasta una
-        interacción válida.
-        */
-
-        console.log(
-            "Esperando interacción para iniciar música."
-        );
-
-    }
-
-}
-
-
-/* =====================================
-   PRIMERA INTERACCIÓN
-===================================== */
-
-/*
-Chrome y otros navegadores no permiten
-autoplay con sonido normalmente.
-
-Por eso esperamos el primer clic/touch.
-*/
-
-function firstInteraction() {
-
-    startMusic();
 
 
     /*
-    Una vez intentado el inicio,
-    ya no necesitamos estos listeners.
+    IMPORTANTE:
+
+    play() se ejecuta directamente
+    desde el toque/click del usuario.
+
+    Esto es importante para Android.
     */
 
-    window.removeEventListener(
-        "pointerdown",
-        firstInteraction
-    );
+    music.muted =
+        false;
+
+    music.volume =
+        0;
 
 
-    window.removeEventListener(
-        "keydown",
-        firstInteraction
-    );
+    const playPromise =
+        music.play();
+
+
+    if (
+        playPromise !== undefined
+    ) {
+
+        playPromise
+            .then(
+                () => {
+
+                    musicStarted =
+                        true;
+
+                    musicMuted =
+                        false;
+
+
+                    fadeInMusic();
+
+                    showMusicPlaying();
+
+                }
+            )
+
+            .catch(
+                (error) => {
+
+                    console.error(
+                        "El navegador bloqueó la música:",
+                        error
+                    );
+
+
+                    /*
+                    Si Android la bloquea,
+                    mantenemos el botón visible
+                    para que pueda intentarlo
+                    nuevamente.
+                    */
+
+                    musicStarted =
+                        false;
+
+                    musicMessage.style.display =
+                        "block";
+
+                    musicMessage.classList.remove(
+                        "hidden"
+                    );
+
+                    musicMessage.textContent =
+                        "♫ Toca aquí para escuchar la música";
+
+                }
+            );
+
+    }
 
 }
 
 
-window.addEventListener(
+/* =====================================
+   MENSAJE DE MÚSICA
+===================================== */
 
-    "pointerdown",
+/*
+Ahora el mensaje inferior es un botón
+real para iniciar la canción.
 
-    firstInteraction
+Funciona tanto con mouse como con
+pantalla táctil.
+*/
 
+musicMessage.addEventListener(
+    "click",
+    (event) => {
+
+        event.preventDefault();
+        event.stopPropagation();
+
+        startMusic();
+
+    }
 );
 
 
-window.addEventListener(
+/*
+pointerup mejora la respuesta
+en dispositivos táctiles.
+*/
 
-    "keydown",
+musicMessage.addEventListener(
+    "pointerup",
+    (event) => {
 
-    firstInteraction
+        event.preventDefault();
+        event.stopPropagation();
 
+        startMusic();
+
+    }
 );
 
 
 /* =====================================
-   BOTÓN MÚSICA
+   BOTÓN DE MÚSICA
 ===================================== */
 
 musicButton.addEventListener(
-
     "click",
+    (event) => {
 
-    async (event) => {
-
-        /*
-        Evitamos que el clic del botón
-        afecte otras interacciones.
-        */
-
+        event.preventDefault();
         event.stopPropagation();
 
 
-        /*
-        Si todavía no ha comenzado,
-        el botón también puede iniciarla.
-        */
+        /* ---------------------------------
+           TODAVÍA NO HA COMENZADO
+        --------------------------------- */
 
         if (
             !musicStarted
         ) {
 
-            await startMusic();
+            startMusic();
 
             return;
-
         }
 
 
-        /* =================================
+        /* ---------------------------------
            SILENCIAR
-        ================================= */
+        --------------------------------- */
 
         if (
             !musicMuted
@@ -464,7 +417,6 @@ musicButton.addEventListener(
             musicMuted =
                 true;
 
-
             music.muted =
                 true;
 
@@ -472,11 +424,9 @@ musicButton.addEventListener(
             musicButton.textContent =
                 "♪";
 
-
             musicButton.classList.remove(
                 "playing"
             );
-
 
             musicButton.classList.add(
                 "muted"
@@ -485,50 +435,43 @@ musicButton.addEventListener(
         }
 
 
-        /* =================================
-           ACTIVAR
-        ================================= */
+        /* ---------------------------------
+           VOLVER A ACTIVAR
+        --------------------------------- */
 
         else {
 
             musicMuted =
                 false;
 
-
             music.muted =
                 false;
-
-
-            /*
-            Restauramos volumen.
-            */
 
             music.volume =
                 TARGET_VOLUME;
 
 
             /*
-            Si por alguna razón estaba
-            pausada, vuelve a reproducirse.
+            Si Android pausó el audio,
+            intentamos reproducirlo otra vez
+            directamente desde el click.
             */
 
             if (
                 music.paused
             ) {
 
-                try {
+                music.play()
+                    .catch(
+                        (error) => {
 
-                    await music.play();
+                            console.error(
+                                "No se pudo reanudar la música:",
+                                error
+                            );
 
-                }
-
-                catch (error) {
-
-                    console.log(
-                        "No se pudo reanudar la música."
+                        }
                     );
-
-                }
 
             }
 
@@ -536,11 +479,9 @@ musicButton.addEventListener(
             musicButton.textContent =
                 "♫";
 
-
             musicButton.classList.remove(
                 "muted"
             );
-
 
             musicButton.classList.add(
                 "playing"
@@ -549,7 +490,34 @@ musicButton.addEventListener(
         }
 
     }
+);
 
+
+/* =====================================
+   TECLADO - PC
+===================================== */
+
+/*
+En PC también permitimos iniciar
+la música presionando una tecla.
+*/
+
+window.addEventListener(
+    "keydown",
+    () => {
+
+        if (
+            !musicStarted
+        ) {
+
+            startMusic();
+
+        }
+
+    },
+    {
+        once: true
+    }
 );
 
 
@@ -568,12 +536,10 @@ function animate(
 
     const delta =
         Math.min(
-
             currentTime -
             previousTime,
 
             40
-
         );
 
 
@@ -591,16 +557,15 @@ function animate(
 
 
     /*
-    Actualizamos OrbitControls primero.
+    Actualizamos OrbitControls.
     */
 
     controls.update();
 
 
     /*
-    Después posicionamos correctamente
-    la fotografía/portal respecto
-    a la cámara.
+    Posicionamos correctamente
+    la fotografía/portal.
     */
 
     updateBlackHolePhoto();
@@ -614,6 +579,7 @@ function animate(
         scene,
         camera
     );
+
 }
 
 

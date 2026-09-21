@@ -282,6 +282,7 @@ body {
     padding:
         8px 14px;
 
+    border: none;
     border-radius: 20px;
 
     color:
@@ -309,8 +310,13 @@ body {
     letter-spacing:
         .4px;
 
-    pointer-events:
-        none;
+    cursor: pointer;
+
+    touch-action:
+        manipulation;
+
+    -webkit-tap-highlight-color:
+        transparent;
 
     opacity: 1;
 
@@ -326,65 +332,4 @@ body {
             53,
             .65
         );
-}
-
-
-/*
-Cuando comienza la música,
-el mensaje desaparece.
-*/
-
-.music-message.hidden {
-    opacity: 0;
-
-    transform:
-        translateX(-50%)
-        translateY(10px);
-}
-
-
-/* =====================================
-   RESPONSIVE
-===================================== */
-
-@media (max-width: 700px) {
-
-    .main-title {
-        top: 6%;
-    }
-
-
-    .main-title h1 {
-        font-size:
-            clamp(
-                1.6rem,
-                7vw,
-                2.7rem
-            );
-    }
-
-
-    .controls-help {
-        font-size: 10px;
-
-        bottom: 18px;
-    }
-
-
-    .music-button {
-        width: 42px;
-        height: 42px;
-
-        right: 15px;
-        bottom: 15px;
-
-        font-size: 19px;
-    }
-
-
-    .music-message {
-        bottom: 55px;
-
-        font-size: 10px;
-    }
 }
