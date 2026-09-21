@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Flores Amarillas</title>
+
+    <link rel="stylesheet" href="css/styles.css">
+
+    <!-- IMPORT MAP DE THREE.JS -->
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"
+        }
+    }
+    </script>
+
+</head>
+
+<body>
+
+    <main id="universe">
+
+        <!-- ESCENA 3D -->
+        <div id="three-container"></div>
+
+
+        <!-- TÍTULO -->
+        <header class="main-title">
+
+            <h1>
+                Feliz Día de las Flores Amarillas 🌻
+            </h1>
+
+        </header>
+
+
+        <!-- AYUDA -->
+        <div class="controls-help">
+
+            <span>
+                Arrastra para explorar
+            </span>
+
+            <span>•</span>
+
+            <span>
+                Rueda para acercar
+            </span>
+
+        </div>
+
+
+        <!-- =====================================
+             MÚSICA
+        ====================================== -->
+
+        <audio
+            id="background-music"
+            src="assets/music/flower.mp3"
+            preload="auto"
+            loop
+        ></audio>
+
+
+        <!-- BOTÓN DE MÚSICA -->
+
+        <button
+            id="music-button"
+            class="music-button"
+            type="button"
+            aria-label="Activar o desactivar música"
+            title="Música"
+        >
+            ♫
+        </button>
+
+
+        <!-- MENSAJE INICIAL -->
+
+        <div
+            id="music-message"
+            class="music-message"
+        >
+            Haz clic para escuchar la música ♫
+        </div>
+
+    </main>
+
+
+    <script
+        type="module"
+        src="js/main.js"
+    ></script>
+
+</body>
+
+</html>

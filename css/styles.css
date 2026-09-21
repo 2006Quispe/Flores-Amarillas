@@ -1,0 +1,390 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+
+body {
+    background: #000000;
+
+    font-family:
+        "Epres Chia",
+        "Segoe Print",
+        cursive;
+}
+
+
+/* =====================================
+   UNIVERSO
+===================================== */
+
+#universe {
+    position: relative;
+
+    width: 100vw;
+    height: 100vh;
+
+    overflow: hidden;
+
+    background: #000;
+}
+
+
+/* =====================================
+   THREE JS
+===================================== */
+
+#three-container {
+    position: absolute;
+
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    z-index: 1;
+}
+
+
+#three-container canvas {
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    cursor: grab;
+}
+
+
+#three-container canvas:active {
+    cursor: grabbing;
+}
+
+
+/* =====================================
+   TÍTULO
+===================================== */
+
+.main-title {
+    position: absolute;
+
+    z-index: 100;
+
+    top: 8%;
+    left: 50%;
+
+    transform:
+        translateX(-50%);
+
+    width: 100%;
+
+    text-align: center;
+
+    pointer-events: none;
+}
+
+
+.main-title h1 {
+    padding: 0 20px;
+
+    font-size:
+        clamp(
+            2rem,
+            2.2vw,
+            2.7rem
+        );
+
+    font-weight: 400;
+
+    color: #fffbd5;
+
+    letter-spacing: 1px;
+
+    text-shadow:
+        0 0 4px #fff,
+        0 0 8px #fff6a3,
+        0 0 15px #ffd735,
+        0 0 28px #ffb700,
+        0 0 50px rgba(255, 183, 0, .65);
+}
+
+
+/* =====================================
+   AYUDA
+===================================== */
+
+.controls-help {
+    position: absolute;
+
+    z-index: 100;
+
+    left: 50%;
+    bottom: 22px;
+
+    transform:
+        translateX(-50%);
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    color:
+        rgba(
+            255,
+            249,
+            205,
+            .55
+        );
+
+    font-family:
+        Arial,
+        sans-serif;
+
+    font-size: 12px;
+
+    pointer-events: none;
+
+    transition:
+        opacity .5s ease;
+}
+
+
+/* =====================================
+   BOTÓN DE MÚSICA
+===================================== */
+
+.music-button {
+    position: absolute;
+
+    z-index: 200;
+
+    right: 25px;
+    bottom: 22px;
+
+    width: 46px;
+    height: 46px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    border:
+        1px solid
+        rgba(255, 221, 70, .45);
+
+    background:
+        rgba(0, 0, 0, .55);
+
+    color: #fff5a5;
+
+    font-size: 22px;
+
+    cursor: pointer;
+
+    backdrop-filter:
+        blur(8px);
+
+    box-shadow:
+        0 0 8px
+        rgba(255, 215, 53, .35),
+
+        inset 0 0 10px
+        rgba(255, 215, 53, .08);
+
+    text-shadow:
+        0 0 6px #ffd735;
+
+    transition:
+        transform .25s ease,
+        box-shadow .25s ease,
+        background .25s ease,
+        opacity .25s ease;
+}
+
+
+.music-button:hover {
+    transform:
+        scale(1.10);
+
+    background:
+        rgba(255, 195, 0, .12);
+
+    box-shadow:
+        0 0 12px
+        rgba(255, 215, 53, .6),
+
+        0 0 25px
+        rgba(255, 183, 0, .25);
+}
+
+
+.music-button:active {
+    transform:
+        scale(.92);
+}
+
+
+/* Música reproduciéndose */
+
+.music-button.playing {
+    border-color:
+        rgba(255, 235, 120, .85);
+
+    box-shadow:
+        0 0 10px
+        rgba(255, 235, 100, .7),
+
+        0 0 25px
+        rgba(255, 190, 0, .35);
+}
+
+
+/* Música apagada */
+
+.music-button.muted {
+    opacity: .55;
+
+    text-shadow: none;
+
+    box-shadow: none;
+}
+
+
+/* =====================================
+   MENSAJE PARA INICIAR MÚSICA
+===================================== */
+
+.music-message {
+    position: absolute;
+
+    z-index: 150;
+
+    left: 50%;
+    bottom: 60px;
+
+    transform:
+        translateX(-50%);
+
+    padding:
+        8px 14px;
+
+    border-radius: 20px;
+
+    color:
+        rgba(
+            255,
+            249,
+            205,
+            .75
+        );
+
+    background:
+        rgba(
+            0,
+            0,
+            0,
+            .30
+        );
+
+    font-family:
+        Arial,
+        sans-serif;
+
+    font-size: 11px;
+
+    letter-spacing:
+        .4px;
+
+    pointer-events:
+        none;
+
+    opacity: 1;
+
+    transition:
+        opacity 1s ease,
+        transform 1s ease;
+
+    text-shadow:
+        0 0 6px
+        rgba(
+            255,
+            215,
+            53,
+            .65
+        );
+}
+
+
+/*
+Cuando comienza la música,
+el mensaje desaparece.
+*/
+
+.music-message.hidden {
+    opacity: 0;
+
+    transform:
+        translateX(-50%)
+        translateY(10px);
+}
+
+
+/* =====================================
+   RESPONSIVE
+===================================== */
+
+@media (max-width: 700px) {
+
+    .main-title {
+        top: 6%;
+    }
+
+
+    .main-title h1 {
+        font-size:
+            clamp(
+                1.6rem,
+                7vw,
+                2.7rem
+            );
+    }
+
+
+    .controls-help {
+        font-size: 10px;
+
+        bottom: 18px;
+    }
+
+
+    .music-button {
+        width: 42px;
+        height: 42px;
+
+        right: 15px;
+        bottom: 15px;
+
+        font-size: 19px;
+    }
+
+
+    .music-message {
+        bottom: 55px;
+
+        font-size: 10px;
+    }
+}
